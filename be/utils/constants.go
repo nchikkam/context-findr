@@ -8,7 +8,8 @@ const FileUploadSizeLimit = 2 * 1024 * 1024
 
 // allowed types
 var SupportedMIMEs = map[string]struct{}{
-	"application/octet-stream": {},
+	"text/plain; charset=utf-8": {},
+	"application/octet-stream":  {},
 }
 
 // server configuration related
