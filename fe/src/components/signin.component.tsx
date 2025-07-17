@@ -38,7 +38,9 @@ export default class Signin extends Component<Props, State> {
   }
 
   componentWillUnmount() {
-    //window.location.reload();
+    if (this.state.redirect) {
+      window.location.reload();
+    }
   }
 
   validationSchema() {

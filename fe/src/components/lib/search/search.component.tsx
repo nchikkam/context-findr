@@ -4,6 +4,7 @@ import AuthService from "../../../services/auth.service";
 import axios from "axios";
 
 import ReactJson, { ReactJsonViewProps } from "react-json-view";
+import { Server } from "../../../common/helper"
 
 
 type Props = {};
@@ -29,16 +30,14 @@ export default class Search extends Component<Props, State> {
         "Authorization": `Bearer ${AuthService.getCurrentUser().token}`,
     };
 
-    const url = "http://localhost:8080/api/v1/search";
-    
-    axios.get(`${url}?q=${query}`, { headers })
+    axios.get(`${Server.baseURL}/api/v1/search?q=${query}`, { headers })
     .then(res => {
         let matches = res.data.matches
         this.setState({ matches });
     })
+    .catch((error) => alert( error.response.data.error));
   }
 
-  //handleEnter(e: ChangeEvent<HTMLInputElement>): void {
   handleEnter(e: KeyboardEvent<HTMLInputElement>): void {
     const target = (e.target as HTMLInputElement)
     

@@ -169,6 +169,15 @@ export default class Register extends Component<Props, State> {
                   </div>
                 </div>
               )}
+
+              { 
+                successful ? 
+                <p>
+                  Successfully Registered, Please try Signin
+                </p> 
+              : 
+                null
+              }
             </Form>
           </Formik>
         </div>

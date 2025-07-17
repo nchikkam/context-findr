@@ -1,12 +1,11 @@
 import axios from "axios";
-
-const API_URL = "http://localhost:8080/";
+import { Server } from "../common/helper";
 
 class AuthService {
   login(email: string, password: string) {
     console.log("Trying to Login....")
     return axios
-      .post(API_URL + "signin", {
+      .post(Server.baseURL + "/signin", {
         email,
         password
       })
@@ -25,7 +24,7 @@ class AuthService {
   }
 
   register(username: string, email: string, password: string) {
-    return axios.post(API_URL + "register", {
+    return axios.post(Server.baseURL + "/register", {
       username,
       email,
       password

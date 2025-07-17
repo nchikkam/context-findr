@@ -2,6 +2,7 @@ import axios from "axios";
 import { Component } from "react";
 
 import AuthService from "../../../services/auth.service";
+import { Server } from "../../../common/helper";
 
 export default class Upload extends Component {
     constructor(props: any){
@@ -19,7 +20,7 @@ export default class Upload extends Component {
             "Authorization": `Bearer ${AuthService.getCurrentUser().token}`,
         };
 
-        axios.post("http://localhost:8080/api/v1/upload", formData, { headers });
+        axios.post(`${Server.baseURL}/api/v1/upload`, formData, { headers });
     }
 
     render (){

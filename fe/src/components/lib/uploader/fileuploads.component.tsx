@@ -2,6 +2,7 @@ import axios from "axios";
 import { Component } from "react";
 
 import AuthService from "../../../services/auth.service";
+import { Server } from "../../../common/helper";
 
 
 type Props = {};
@@ -30,7 +31,7 @@ export default class FileUploads extends Component<Props, State> {
             "Authorization": `Bearer ${AuthService.getCurrentUser().token}`,
         };
 
-        await axios.get("http://localhost:8080/api/v1/uploads", { headers })
+        await axios.get(`${Server.baseURL}/api/v1/uploads`, { headers })
         .then(res => {
             let files = res.data.files
             this.setState({ files });
