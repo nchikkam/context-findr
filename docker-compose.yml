@@ -1,0 +1,48 @@
+version: '3.7'
+
+services:
+  ctx_fndr_be:
+    container_name: 'ctx_fndr_be'
+    build:
+      context: ./be
+      target: development
+    volumes:
+      - ./be:/be
+    ports:
+      # - ${SERVER_PORT}:${SERVER_PORT}
+      - 8080:8080
+    env_file:
+      - .env
+    depends_on:
+      - mongo
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017/ctx_fndr_app
+
+  ctx_fndr_fe:
+    container_name: 'ctx_fndr_fe'
+    build:
+      context: ./fe
+      target: development
+    volumes:
+      - ./fe:/fe
+    ports:
+      - 3000:3000
+    command: npm run serve
+
+  mongo:
+    image: mongo:latest
+    container_name: 'ctx_fndr_mongo'
+    volumes:
+      - mongodb_data_container:/data/db
+    env_file:
+      - .env
+    environment:
+      - MONGO_INITDB_DATABASE=${MONGO_DATABASE}
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+    ports:
+      - ${MONGO_PORT}:${MONGO_PORT}
+networks:
+  webnet:
+volumes:
+  mongodb_data_container:
