@@ -23,6 +23,7 @@ func setUpConfigurations(engine *gin.Engine) {
 func setUpRoutes(engine *gin.Engine) {
 	engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
+	engine.GET("/", controller.Home)
 	engine.POST("/register", controller.Register)
 	engine.POST("/signin", controller.Signin)
 
