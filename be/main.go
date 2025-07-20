@@ -2,10 +2,10 @@ package main
 
 import (
 	"github.com/nchikkam/context-findr-be/router"
-	"github.com/nchikkam/context-findr-be/utils"
+	utils "github.com/nchikkam/context-findr-be/utils/infrastructure"
 )
 
-// @Author:   nchikkam
+// @Author:   		nchikkam
 // @title           Simple File Upload Go OpenAPI
 // @version         1.0
 // @description     A simple file Upload CRUD API using Gin.

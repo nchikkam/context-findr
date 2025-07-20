@@ -13,7 +13,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/nchikkam/context-findr-be/model"
-	"github.com/nchikkam/context-findr-be/utils"
+	utils "github.com/nchikkam/context-findr-be/utils/infrastructure"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -88,16 +88,9 @@ func FileUpload(c *gin.Context) {
 		return
 	}
 
-	filename := filepath.Base(header.Filename)        // basic sanitization
-	filename = filepath.Clean(filename)               // clean up the filename
-	filename = strings.ReplaceAll(filename, " ", "_") // replace spaces with underscores
+	rel_path, abs_path := normalizeFileName(header.Filename)
 
-	timestamp := strconv.FormatInt(time.Now().UTC().UnixNano(), 10)
-
-	newFilename := fmt.Sprintf("%s-%s", timestamp, filename)
-	outPath := filepath.Join(utils.Store, newFilename)
-
-	if err := c.SaveUploadedFile(header, outPath); err != nil {
+	if err := c.SaveUploadedFile(header, abs_path); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "unable to save file"})
 		return
 	}
@@ -106,9 +99,11 @@ func FileUpload(c *gin.Context) {
 	email := c.GetString("userEmail")
 	newFile := model.File{
 		ID:    primitive.NewObjectID(),
-		Name:  newFilename,
+		Name:  rel_path,
 		Email: strings.ToLower(email),
 	}
+
+	getFileCollection().DeleteMany(c, bson.M{"email": email}) // limit user to just 1 knowledge base file for now
 
 	_, err = getFileCollection().InsertOne(c, newFile)
 	if err != nil {
@@ -118,15 +113,27 @@ func FileUpload(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"message":  "file uploaded successfully",
-		"filename": newFilename,
+		"filename": rel_path,
 	})
 }
 
-// helpers
 func guessIncomingFileMimeType(f multipart.File) (string, error) {
 	buffer := make([]byte, 512)
 	if _, err := f.Read(buffer); err != nil && err != io.EOF {
 		return "", err
 	}
 	return http.DetectContentType(buffer), nil
+}
+
+func normalizeFileName(filebase string) (string, string) {
+	filename := filepath.Base(filebase)
+	filename = filepath.Clean(filename)
+	filename = strings.ReplaceAll(filename, " ", "_")
+
+	timestamp := strconv.FormatInt(time.Now().UTC().UnixNano(), 10)
+
+	newFilename := fmt.Sprintf("%s-%s", timestamp, filename)
+
+	// todo: use classifier here later to place file in correct folder
+	return newFilename, filepath.Join(utils.Store, newFilename)
 }

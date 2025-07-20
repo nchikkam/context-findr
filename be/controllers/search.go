@@ -1,15 +1,13 @@
 package controllers
 
 import (
-	"bufio"
 	"fmt"
 	"net/http"
-	"os/exec"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/nchikkam/context-findr-be/model"
-	"github.com/nchikkam/context-findr-be/utils"
+	"github.com/nchikkam/context-findr-be/utils/classifiers"
+	utils "github.com/nchikkam/context-findr-be/utils/infrastructure"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
@@ -43,25 +41,12 @@ func Search(c *gin.Context) {
 	}
 
 	fileName := utils.Store + userFile.Name
+	results := classifiers.ExtractTextContext(fileName, query)
 
-	// todo: create go module for grepping
-	cmd := exec.Command("grep", "-n", query, fileName)
-	out, err := cmd.CombinedOutput()
-	if err != nil {
+	_, err_exists := results["error"]
+	if err_exists {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("search encoutered some error: %v", err)})
 		return
-	}
-
-	results := make(map[string]string)
-	scanner := bufio.NewScanner(strings.NewReader(string(out)))
-	for scanner.Scan() {
-		var snippet string = scanner.Text()
-		match := strings.Split(snippet, ":")
-
-		number := match[0]
-		line := strings.Join(match[1:], "")
-
-		results[number] = line
 	}
 
 	c.JSON(http.StatusOK, gin.H{

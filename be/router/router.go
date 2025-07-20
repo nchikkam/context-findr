@@ -8,7 +8,7 @@ import (
 	controller "github.com/nchikkam/context-findr-be/controllers"
 	_ "github.com/nchikkam/context-findr-be/docs"
 	"github.com/nchikkam/context-findr-be/middleware"
-	"github.com/nchikkam/context-findr-be/utils"
+	utils "github.com/nchikkam/context-findr-be/utils/infrastructure"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )

@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"github.com/nchikkam/context-findr-be/utils"
+	utils "github.com/nchikkam/context-findr-be/utils/infrastructure"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 

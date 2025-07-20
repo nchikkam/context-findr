@@ -1,0 +1,8 @@
+#MONGO_DB_URI=mongodb://0.0.0.0:27017/
+MONGO_DB_URI=mongodb://mongo:27017/
+
+MONGO_DB_NAME=uploadsdb
+
+JWT_KEY=your_jwt_secret
+
+PORT=8080
